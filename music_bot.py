@@ -135,4 +135,4 @@ async def on_voice_state_update(member, before, after):
             await voice_client.disconnect()
 
 # Run the bot
-bot.run('***REMOVED***')
+bot.run('KEY')
