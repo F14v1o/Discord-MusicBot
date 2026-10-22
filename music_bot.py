@@ -1,7 +1,15 @@
+import os
+import asyncio
+
 import discord
 from discord.ext import commands
 import yt_dlp as youtube_dl
-import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+if not TOKEN:
+    raise SystemExit("DISCORD_BOT_TOKEN is not set. Copy .env.example to .env and fill it in.")
 
 # Bot setup
 intents = discord.Intents.default()
@@ -23,7 +31,6 @@ ytdl_format_options = {
     'no_warnings': True,  # Suppress warnings
     'default_search': 'auto',  # Automatically handle search queries
     'source_address': '0.0.0.0',  # Bind to IPv4
-    'cookiefile': 'cookies.txt',
 }
 
 # Lightweight FFmpeg options
@@ -31,6 +38,10 @@ ffmpeg_options = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
     'options': '-vn',  # No video, audio only
 }
+
+# Optional: a cookies file helps with age-restricted videos. Never commit it.
+if os.path.exists("cookies.txt"):
+    ytdl_format_options["cookiefile"] = "cookies.txt"
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
@@ -135,4 +146,4 @@ async def on_voice_state_update(member, before, after):
             await voice_client.disconnect()
 
 # Run the bot
-bot.run('KEY')
+bot.run(TOKEN)
